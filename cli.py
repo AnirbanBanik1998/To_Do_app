@@ -2,11 +2,14 @@ import argparse
 import requests, json
 from datetime import datetime, date
 
+app_url = "http://127.0.0.1:5000"
+
+#Get status data from URL
 def getdata(func, title=None, date=None):
     if title:
-        URL="http://127.0.0.1:5000/{}/{}/{}".format(func, title, date)
+        URL="app_url/{}/{}/{}".format(func, title, date)
     else:
-        URL="http://127.0.0.1:5000/{}/{}".format(func, date)
+        URL="app_url/{}/{}".format(func, date)
     print("URL:"+URL)
     session = requests.Session()
     session.trust_env = False
@@ -17,8 +20,9 @@ def getdata(func, title=None, date=None):
     else:
         return(None)
 
+#Post data to URL
 def postdata(func, title, date, payload=None):
-    URL="http://127.0.0.1:5000/{}/{}/{}".format(func, title, date)
+    URL="app_url/{}/{}/{}".format(func, title, date)
     print("URL:"+URL)
     session = requests.Session()
     session.trust_env = False
@@ -27,6 +31,7 @@ def postdata(func, title, date, payload=None):
     if (response.status_code == requests.codes.ok):
         print(response.text)
 
+#Creating the CLI arguments
 my_parser = argparse.ArgumentParser(description="To Do Application")
 
 my_parser.add_argument('-d', '--date', action='store', type=str, 
@@ -42,6 +47,7 @@ my_parser.add_argument('-s', '--subtask', action='store', type=str,
 
 args = my_parser.parse_args()
 
+#If date is not initialized, it is taken as today's date
 if not args.date:
     date = date.today()
 else:
@@ -60,9 +66,13 @@ if args.task:
                 payload['content'] = array[1]
                 print("Payload: "+str(payload))
             except:
+                #Mainly if user has not specified the contents of the subtask
                 pass
+            #Add subtask to database, if both subtask and task 
+            #arguments are given 
             postdata('add_subtask', args.task, date_str, payload)
         else:
+            #If subtask argument is not given, add task to database
             postdata('add_task', args.task, date_str)
     elif args.remove:
         if args.subtask:
@@ -73,11 +83,15 @@ if args.task:
                 print("Payload: "+str(payload))
             except:
                 pass
+            #Remove subtask from database
             postdata('remove_subtask', args.task, date_str, payload)
         else:
+            #Remove task from database
             postdata('remove_task', args.task, date_str)
     else:
+        #If neither add or remove arguments are specified, get subtask status
         print(getdata('get_subtasks', args.task, date_str))
 
 else:
+    #If no arguments are specified, get task status
     print(getdata('get_tasks', date=date_str))

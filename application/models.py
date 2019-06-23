@@ -1,6 +1,7 @@
 from datetime import date
 from application import db
 
+#For the tasks data
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -12,6 +13,7 @@ class Task(db.Model):
     def __repr__(self):
         return "Task - title -> {}, to_do_date -> {}".format(self.title, self.date_posted)
 
+#For the subtask data corresponding to a given task
 class Subtask(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
