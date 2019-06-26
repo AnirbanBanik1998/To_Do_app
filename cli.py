@@ -7,9 +7,9 @@ app_url = "http://127.0.0.1:5000"
 #Get status data from URL
 def getdata(func, title=None, date=None):
     if title:
-        URL="app_url/{}/{}/{}".format(func, title, date)
+        URL="{}/{}/{}/{}".format(app_url, func, title, date)
     else:
-        URL="app_url/{}/{}".format(func, date)
+        URL="{}/{}/{}".format(app_url, func, date)
     print("URL:"+URL)
     session = requests.Session()
     session.trust_env = False
@@ -22,7 +22,7 @@ def getdata(func, title=None, date=None):
 
 #Post data to URL
 def postdata(func, title, date, payload=None):
-    URL="app_url/{}/{}/{}".format(func, title, date)
+    URL="{}/{}/{}/{}".format(app_url, func, title, date)
     print("URL:"+URL)
     session = requests.Session()
     session.trust_env = False
